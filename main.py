@@ -4,7 +4,7 @@ from discord.ext import commands, tasks
 from discord.ext.commands import Bot, Context
 
 
-import yaml, discord
+import yaml, discord, asyncio
 
 # ========================================================================================================================
 # ========================================================================================================================
@@ -18,8 +18,7 @@ def main():
     for key in config_bot:
         print(f' - {key}: {config_bot[key]}')
     
-
-
+    
     bot = setup_bot(config_bot)
     bot.run(config_bot["TOKEN"])
 
@@ -35,6 +34,7 @@ def load_bot_config():
             print(E)
             return None
 
+
 def setup_bot(config_bot):
     bot = Bot(command_prefix=commands.when_mentioned_or(config_bot["PREFIX"]), intents=discord.Intents.default())
 
@@ -44,8 +44,12 @@ def setup_bot(config_bot):
 
     @bot.event
     async def on_command_error(ctx, err) -> None:
+        await ctx.send(str(err))
         print("ERROR:", err)
     
+    for cog in config_bot["STARTUPEXTENSIONS"]:
+        asyncio.run(bot.load_extension(cog))
+
     return bot
 
 # ========================================================================================================================
