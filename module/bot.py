@@ -12,8 +12,8 @@ class UniversalBot(commands.Bot):
         self.config_file = config_file
         self.bot_config = self.load_config(config_file)
         
-        commands.Bot.__init__(self, command_prefix=commands.when_mentioned_or(self.bot_config["PREFIX"]), intents=discord.Intents.default())
-
+        commands.Bot.__init__(self, command_prefix=commands.when_mentioned_or(self.bot_config["PREFIX"]), intents = discord.Intents.all())
+    
     # ----------------------------------------------------------------------------------------------------
     # ----------------------------------------------------------------------------------------------------
     # METHODS:
@@ -27,7 +27,14 @@ class UniversalBot(commands.Bot):
                 return None
     
 
+
     async def setup(self):
+
+        # print config:
+        print(r'seting up bot:')
+        for key in self.bot_config:
+            print(f'\t - {key}: {self.bot_config[key]}')
+
 
         # set username
         await self.user.edit(username=self.bot_config['BOTNAME'])
@@ -46,6 +53,7 @@ class UniversalBot(commands.Bot):
             await ctx.send("done")
 
 
+
     def start_service(self):
         self.run(self.bot_config["TOKEN"])    
 
@@ -62,7 +70,7 @@ class UniversalBot(commands.Bot):
         await ctx.send(str(err))
         print("ERROR:", err)
             
-
+    
         
         
     # ----------------------------------------------------------------------------------------------------
