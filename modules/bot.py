@@ -2,31 +2,23 @@ from discord.ext import commands
 from yaml.loader import SafeLoader
 from discord.ext import commands, tasks
 #from discord.ext.commands import Bot, Context
+import modules.tools as tools
 
-import yaml, discord, asyncio
+import yaml, discord, asyncio, os
 
 
 class UniversalBot(commands.Bot):
     def __init__(self, config_file:str):
 
         self.config_file = config_file
-        self.bot_config = self.load_config(config_file)
+        #self.config_dict = self.load_config(config_file)
+        self.bot_config = tools.load_config_file(self.config_file)
         
         commands.Bot.__init__(self, command_prefix=commands.when_mentioned_or(self.bot_config["PREFIX"]), intents = discord.Intents.all())
-    
+        
     # ----------------------------------------------------------------------------------------------------
     # ----------------------------------------------------------------------------------------------------
     # METHODS:
-
-    def load_config(self, filepath):
-        with open("config/bot.yaml", "r") as stream:
-            try:
-                return yaml.safe_load(stream)
-            except yaml.YAMLError as E:
-                print(E)
-                return None
-    
-
 
     async def setup(self):
 
@@ -34,7 +26,6 @@ class UniversalBot(commands.Bot):
         print(r'seting up bot:')
         for key in self.bot_config:
             print(f'\t - {key}: {self.bot_config[key]}')
-
 
         # set username
         await self.user.edit(username=self.bot_config['BOTNAME'])
@@ -66,11 +57,28 @@ class UniversalBot(commands.Bot):
         print("bot ready")
     
 
+
     async def on_command_error(self, ctx, err) -> None:
-        await ctx.send(str(err))
-        print("ERROR:", err)
-            
+        # dynamic dialog handler
+        if isinstance(err, commands.errors.CommandNotFound) and self.user.mentioned_in(ctx):
+            # dialog handling
+            await ctx.send("DIALOG: " + str(ctx))
+            print("DIALOG:", str(ctx))
+
+        else:
+            # normal error handling
+            await ctx.send(str(err))
+            print("ERROR:", err)
     
+
+
+    async def on_message(self, ctx):
+        if ctx.author.id == self.user.id: return
+        
+        if self.user.mentioned_in(ctx):
+            await ctx.channel.send("Hey! I've been mentioned.")
+        
+        await self.process_commands(ctx)
         
         
     # ----------------------------------------------------------------------------------------------------

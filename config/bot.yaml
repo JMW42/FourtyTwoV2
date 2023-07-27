@@ -1,0 +1,4 @@
+TOKEN: file:config/token.yaml
+PREFIX: '<'
+STARTUPEXTENSIONS: file:config/startup.yaml
+BOTNAME: Fourty Two 2 - test

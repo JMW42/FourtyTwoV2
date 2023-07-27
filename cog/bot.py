@@ -1,6 +1,6 @@
 from discord.ext import commands, tasks
 from discord.ext.commands import Bot, Context
-import module.tools as tools
+import modules.tools as tools
 import discord, time, os
 
 

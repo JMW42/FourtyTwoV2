@@ -1,5 +1,5 @@
 
-from module.bot import UniversalBot as UniversalBot
+from modules.bot import UniversalBot as UniversalBot
 
 # ========================================================================================================================
 # ========================================================================================================================
@@ -8,11 +8,7 @@ from module.bot import UniversalBot as UniversalBot
 def main():
     
     bot = UniversalBot("config/bot.yaml")
-    bot.start_service()
-
-    #bot = setup_bot(config_bot)
-    #bot.run(config_bot["TOKEN"])
-    
+    #bot.start_service()
 
 # ========================================================================================================================
 
